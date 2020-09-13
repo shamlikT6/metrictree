@@ -1,0 +1,43 @@
+{
+    "name": "Burk Lee",
+    "phone": "(XXX)XXX-XXX",
+    "email": "burk.lee@gmail.com",
+    "address": "City, State Zip Code",
+    "Education": {
+        "1": {
+            "date": "May 2023",
+            "details": "University of California, BerkeleyIntended: Bachelor of Arts in PsychologyGPA: 3.7  "
+        },
+        "2": {
+            "date": "June 2019",
+            "details": "Balboa High School, San Francisco  Balboa High School, San FranciscoHigh School Diploma Relevant Coursework:  Relevant Coursework:  ​ data analysis, child development and adolescence, public services, administration,  program development, research methods"
+        }
+    },
+    "Leadership Experience ": {
+        "1": {
+            "date": "August 2019",
+            "details": "ASUC Student Union Event Services – Berkeley, CA  -Present  Event Planning Assistant ● Assist with the quality of services for students and staff at UC Berkeley campus. ● Organize and prepare the materials and equipment needed for events serving over 100+ guests.  ● Maintain a positive guest experience by ensuring all event requests were met in a timely manner.  "
+        },
+        "2": {
+            "date": "December 2019 - January 2020",
+            "details": "Barany Consulting- Berkeley, CA  Barany Consulting- Berkeley, CA - Externship  ● Explored work environments aligned to personal career and educational goals in social services by  participating in training, presentations, and workshops to enhance communication skills. ● Assisted staff to complete administrative projects: emails, phone transfers, printing, scanning.● Connected with alumni to explore opportunities for personal and professional growth within the  consulting industry. "
+        }
+    },
+    "Professional Experience ": {
+        "1": {
+            "date": "May 2018 - June 2019",
+            "details": "Target- San Francisco, CA  - Sales Associate  ● Monitored inventory and restocked items as requested by store manager and team. ● Provided memorable customer service by assisting with merchandise to meet demands of company. ● Multitasked in a face pace environment to produce high volume of sales to meet weekly benchmarks.● Operated computerized cash register and processed membership accounts. "
+        }
+    },
+    "Additional Projects ": {
+        "1": {
+            "date": "June 2018",
+            "details": "Child Development Research  ● Collected data from online reports to analyze the findings to present a 15-page research paper.  ● Interviewed with students on campus to record over 50 responses to gain insight of their perceptions on  the developmental stages of children. ● Presented a 10-minute presentation while facilitating a Q&A panel regarding research results.  "
+        }
+    },
+    "Skills & Interests": {
+        "Technical": " ​  Proficient with Microsoft Suite, Adobe Photoshop and Illustrator, Google Platforms  ",
+        " Language": " ​  Basic Tagalog (written and verbal)  ",
+        " Interests": "  ​ Community Service with over 100+ volunteer hours, traveler to over 5 countries in Asia.  "
+    }
+}

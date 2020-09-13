@@ -2,11 +2,10 @@
 # https://towardsdatascience.com/extracting-headers-and-paragraphs-from-pdf-using-pymupdf-676e8421c467
 
 import argparse, sys
-# import tika
-# from tika import parser
-from operator import itemgetter
 import fitz
 import pprint
+import json
+import re 
 
 def get_args():
     parser = argparse.ArgumentParser()
@@ -137,6 +136,7 @@ def headers_para(doc, size_tag):
     return header_para
 
 def extract_data(data):
+    """ splits each block with a header and para into a seperate list """
     index_list = []
     data_list = []
     for idx, val in enumerate(data):
@@ -155,20 +155,62 @@ def extract_data(data):
     return data_list
 
 def data_tojson(data_list):
-    json_data = {}
-    for data in data_list:
-        if '<h1>' in data[0]:
-            json_data['name'] = data[0][4:data[0].find('|')]
-            json_data['phone'] = data[2].split('|')[0][3:]
-            json_data['address'] = data[3][3:data[3].find('|')]
+    """converts the list of lists of header-para blocks to logical json data
+    all logic specific to extract data from the given file """
 
-        elif '<h2>' in data[0]:
+    json_data = {}
+    months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] 
+    for data in data_list:
+        if '<h1>' in data[0]: # processing main header
+            json_data['name'] = data[0][4:data[0].find('|')] # name is the first element in main header
+            json_data['phone'] = data[2].split('|')[0][3:].replace(' ', '') # phone is the first part of second element
+            json_data['email'] = data[2].split('|')[1].replace(' ', '')  # email is the second part of second element          
+            json_data['address'] = data[3][3:data[3].find('|')] # address is the third element
+
+        elif '<h2>' in data[0]: # processing subheaders
             key = data[0][4:data[0].find('|')]
+            json_data[key] = {}
             value = ''
-            for i in data[1:]:
+            skills_list = []
+            date_period = 1 
+            first_date = True
+            for idx,i in enumerate(data[1:]):
                 if '<p>' in i:
-                    value = value + i.replace('|', '')[3:]
-            json_data[key] = value
+                    if key == 'Skills & Interests': # additional granularity added for  Skills 
+                        skills_list = i[3:].split('|')
+                        for skill in skills_list[:-1]:
+                            skill_type = skill.split(':')[0]
+                            skill_content = skill.split(':')[1]
+                            json_data[key][skill_type] = skill_content
+                    else:
+                        if any(month in i for month in months):
+                            if first_date:
+                                first_date = False
+                                json_data[key][date_period] = {}
+                            else:
+                                json_data[key][date_period]['details'] = value  
+                                value = '' 
+                                date_period = date_period + 1
+                                json_data[key][date_period] = {}
+
+                            # extracting date value for all sub headers
+                            matches = re.findall('((\d{2}|January|Jan|February|Feb|March|Mar|April|Apr|May|May|June|Jun|July|Jul|August|Aug|September|Sep|October|Oct|November|Nov|December|Dec)[\/ ]\d{2,4})', i)
+                            if len(matches) > 1:
+                                date = matches[0][0] + ' - ' + matches[1][0]
+                                json_data[key][date_period]['date'] = date
+                                i = i.replace(matches[0][0], '')
+                                i = i.replace(matches[1][0], '')
+                            else:
+                                date = matches[0][0]
+                                json_data[key][date_period]['date'] = date
+                                i = i.replace(matches[0][0], '')
+
+                        value = value + i.replace('|', '').replace('    ','')[3:]
+
+                if idx == len(data)-2 and key != 'Skills & Interests':
+                    if date_period not in json_data[key]:
+                        json_data[key][date_period] = {}
+                    json_data[key][date_period]['details'] = value
                     
     return json_data
 
@@ -177,15 +219,14 @@ def main():
     filename = args.input
     doc = fitz.open(filename)
     font_counts, styles = fonts(doc)
-    # print(font_counts)
     tags = font_tags(font_counts, styles)
-    # print(tags)
     data = headers_para(doc, tags)
-    # print(data)
     extracted_data = extract_data(data)
-    print(extracted_data)
     json_data = data_tojson(extracted_data)
-    pprint.pprint(json_data)
+    
+    output_file = args.output
+    with open(output_file, 'w', encoding='utf-8') as f:
+        json.dump(json_data, f, ensure_ascii=False, indent=4)
 
 if __name__=="__main__":
     main() 
